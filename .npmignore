@@ -1,0 +1,15 @@
+.cache/
+.editorconfig
+.github/
+.idea/
+.storybook/
+.vscode/
+example/
+src/
+test/
+CONTRIBUTING.md
+custom.d.ts
+tsconfig.json
+tsdx.config.js
+*.tgz
+*.zip

@@ -1,31 +1,70 @@
 {
-  "version": "0.1.0",
+  "name": "@allejo/react-position-sticky",
   "license": "MIT",
+  "author": {
+    "name": "CSUN IT"
+  },
+  "version": "1.0.0",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "module": "dist/react-position-sticky.esm.js",
   "files": [
     "dist",
     "src"
   ],
-  "engines": {
-    "node": ">=10"
-  },
   "scripts": {
-    "start": "tsdx watch",
+    "analyze": "size-limit --why",
     "build": "tsdx build",
-    "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
-    "analyze": "size-limit --why"
+    "start": "tsdx watch",
+    "test": "tsdx test --passWithNoTests",
+    "prettify": "npm-run-all prettify:auto:*",
+    "prettify:auto:code": "prettier --list-different --write \"{.github,example,src,test}/**/*.{css,js,jsx,mdx,ts,tsx,scss,yaml,yml}\"",
+    "prettify:auto:package-json": "prettier-package-json --expand-users --write ./package.json",
+    "prettify:raw:code": "prettier --list-different --write",
+    "prettify:raw:package-json": "prettier-package-json --expand-users --write",
+    "watch": "tsdx watch --noClean"
   },
+  "typings": "dist/index.d.ts",
   "peerDependencies": {
     "react": ">=16"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.9.1",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "eslint-plugin-prettier": "^3.2.0",
+    "husky": "^4.3.5",
+    "import-sort-style-module": "^6.0.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.1",
+    "prettier-check": "^2.0.0",
+    "prettier-package-json": "^2.1.3",
+    "prettier-plugin-import-sort": "^0.0.4",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "size-limit": "^4.9.1",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.0.3",
+    "typescript": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=10"
   },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
     }
+  },
+  "importSort": {
+    ".ts, .tsx": {
+      "style": "module"
+    }
+  },
+  "lint-staged": {
+    "*.{css,js,jsx,mdx,ts,tsx,scss,yaml,yml}": "yarn prettify:raw:code",
+    "package.json": "yarn prettify:raw:package-json"
   },
   "prettier": {
     "printWidth": 80,
@@ -33,9 +72,6 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "react-position-sticky",
-  "author": "CSUN IT",
-  "module": "dist/react-position-sticky.esm.js",
   "size-limit": [
     {
       "path": "dist/react-position-sticky.cjs.production.min.js",
@@ -45,17 +81,5 @@
       "path": "dist/react-position-sticky.esm.js",
       "limit": "10 KB"
     }
-  ],
-  "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.9.1",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "husky": "^4.3.5",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "size-limit": "^4.9.1",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.0.3",
-    "typescript": "^4.1.2"
-  }
+  ]
 }

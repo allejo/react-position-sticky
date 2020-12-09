@@ -1,9 +1,11 @@
 import 'react-app-polyfill/ie11';
+
+import './index.css';
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { StickyNotifier, StickyNotifierProvider } from '../src';
-import './index.css';
 
 const loremIpsum = `
 Pulvinar mattis nunc sed blandit libero. Est lorem ipsum dolor sit. Non pulvinar
@@ -98,7 +100,7 @@ const App = () => {
 						{Messages.map((message, index) => (
 							<div key={index} data-lorem="p">
 								<StickyNotifier
-									onSticky={stuck =>
+									onSticky={(stuck) =>
 										handleSticky(stuck, message)
 									}
 								>

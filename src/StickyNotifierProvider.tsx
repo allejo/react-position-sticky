@@ -1,6 +1,6 @@
 import React, {
-	cloneElement,
 	ReactElement,
+	cloneElement,
 	useEffect,
 	useRef,
 	useState,
@@ -45,7 +45,7 @@ export function StickyNotifierProvider(props: Props) {
 
 		setObservers({
 			top: new IntersectionObserver(
-				records => {
+				(records) => {
 					for (const record of records) {
 						const targetID = record.target.getAttribute(
 							'data-sticky-sentinel-for'
@@ -79,7 +79,7 @@ export function StickyNotifierProvider(props: Props) {
 				}
 			),
 			btm: new IntersectionObserver(
-				records => {
+				(records) => {
 					for (const record of records) {
 						const targetID = record.target.getAttribute(
 							'data-sticky-sentinel-for'

@@ -11,7 +11,7 @@
 body {
 	margin: calc(var(--default-padding) * 2) auto;
 	line-height: 1.6;
-	color: #78909C;
+	color: #78909c;
 	font-family: 'Roboto', sans-serif;
 	background-color: #fff;
 	max-width: 1000px;
@@ -45,13 +45,18 @@ a {
 	color: inherit;
 }
 
-h2, h2, h3, h4, h5 {
+h2,
+h2,
+h3,
+h4,
+h5 {
 	margin: 0;
 	font-weight: 300;
-	color: #546E7A;
+	color: #546e7a;
 }
 
-h2, h2 {
+h2,
+h2 {
 	font-size: 28px;
 }
 
@@ -59,7 +64,7 @@ h2, h2 {
 	overflow: auto;
 	will-change: transform; /* make overflow fast on non-retina */
 	padding: var(--default-padding);
-	background-color: #ECEFF1;
+	background-color: #eceff1;
 	scroll-behavior: smooth;
 }
 
@@ -67,7 +72,7 @@ h2, h2 {
 	position: sticky;
 	top: var(--sticky-pos); /* Sentinels adjust based on this position. */
 	height: var(--header-height);
-	background: #3A5E8C;
+	background: #3a5e8c;
 	padding: 0 var(--default-padding);
 	display: flex;
 	align-items: center;
@@ -81,7 +86,7 @@ h2, h2 {
 	visibility: hidden;
 }
 
-[data-sticky-sentinel-location="top"] {
+[data-sticky-sentinel-location='top'] {
 	/* Adjust the height and top values based on your on your sticky top position.
 	e.g. make the height bigger and adjust the top so observeHeaders()'s
 	IntersectionObserver fires as soon as the bottom of the sentinel crosses the
@@ -90,7 +95,7 @@ h2, h2 {
 	top: -24px;
 }
 
-[data-sticky-sentinel-location="bottom"] {
+[data-sticky-sentinel-location='bottom'] {
 	bottom: 0;
 	/* Height should match the top of the header when it's at the bottom of the
 	intersection container. */
@@ -118,8 +123,7 @@ h2, h2 {
 
 .shadow {
 	box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14),
-	0 1px 18px 0 rgba(0, 0, 0, 0.12),
-	0 3px 5px -1px rgba(0, 0, 0, 0.4);
+		0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
 }
 
 .who_is_sticky {
@@ -129,7 +133,7 @@ h2, h2 {
 }
 
 .who_is_sticky label {
-	color: #607D8B;
+	color: #607d8b;
 	font-weight: 500;
 }
 
