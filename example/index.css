@@ -18,46 +18,23 @@ body {
 	padding: 0 var(--default-padding);
 }
 
-body.debug [data-sticky-sentinel-location] {
-	visibility: visible;
-	opacity: 0.8;
-	color: initial;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-body.debug .sticky {
-	z-index: 1;
-}
-
-body.embed {
-	margin: 0;
-	max-width: initial;
-	padding: 0;
-}
-
-body.embed .no-embed {
-	display: none;
-}
-
 a {
 	color: inherit;
 }
 
-h2,
+h1,
+h2 {
+	font-size: 28px;
+}
+
+h1,
 h2,
 h3,
 h4,
 h5 {
-	margin: 0;
 	font-weight: 300;
 	color: #546e7a;
-}
-
-h2,
-h2 {
-	font-size: 28px;
+	margin: 0;
 }
 
 #container {
@@ -66,6 +43,19 @@ h2 {
 	padding: var(--default-padding);
 	background-color: #eceff1;
 	scroll-behavior: smooth;
+}
+
+.debug [data-sticky-sentinel-location] {
+	visibility: visible;
+	opacity: 0.8;
+	color: initial;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.debug .sticky {
+	z-index: 1;
 }
 
 .sticky {
@@ -102,46 +92,34 @@ h2 {
 	height: calc(var(--header-height) + var(--default-padding));
 }
 
-[data-lorem] {
-	margin-bottom: calc(var(--default-padding) * 2);
-	text-align: justify;
-	padding: var(--default-padding);
-	position: relative; /* contain the sentinels */
+.sticky-item {
 	background-color: #fff;
+	margin-bottom: 20px;
+	padding: 10px;
+	position: relative;
+	text-align: justify;
 }
 
-[data-lorem] h2 {
+.sticky-item h2 {
 	color: #fff;
 }
 
-.nosupport {
-	color: darkred;
-	font-weight: bold;
-	display: none;
-	text-align: center;
-}
-
-.shadow {
+.sticky-item [stuck] {
 	box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14),
 		0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.4);
 }
 
-.who_is_sticky {
-	padding-bottom: var(--default-padding);
+.sticky-status {
 	display: flex;
 	justify-content: space-between;
+	padding-bottom: 10px;
 }
 
-.who_is_sticky label {
-	color: #607d8b;
-	font-weight: 500;
+header {
+	max-width: 700px;
 }
 
 main {
 	display: flex;
 	height: 50vh;
-}
-
-header {
-	max-width: 700px;
 }

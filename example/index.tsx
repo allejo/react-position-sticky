@@ -50,6 +50,7 @@ const App = () => {
 		'page!',
 	];
 	const [header, setHeader] = React.useState('--');
+	const [debug, setDebug] = React.useState(false);
 
 	const handleSticky = (stuck: boolean, header: string) => {
 		setHeader(stuck ? header : '--');
@@ -87,25 +88,27 @@ const App = () => {
 
 			<p>Instructions: Scroll the container below...</p>
 
-			<div className="who_is_sticky">
+			<div className="sticky-status">
 				<span>
-					Sticking header: <label>{header}</label>
+					Sticking header: <b>{header}</b>
 				</span>
-				<button onClick={() => {}}>Toggle debug mode</button>
+				<button onClick={() => setDebug(!debug)}>
+					Toggle debug mode
+				</button>
 			</div>
 
-			<main>
+			<main className={debug ? 'debug' : ''}>
 				<StickyNotifierProvider>
 					<div id="container">
-						{Messages.map((message, index) => (
-							<div key={index} data-lorem="p">
+						{Messages.map((msg, index) => (
+							<div key={index} className="sticky-item">
 								<StickyNotifier
 									onSticky={(stuck) =>
-										handleSticky(stuck, message)
+										handleSticky(stuck, msg)
 									}
 								>
 									<div className="sticky">
-										<h2 id={message}>{message}</h2>
+										<h2 id={msg}>{msg}</h2>
 									</div>
 								</StickyNotifier>
 
