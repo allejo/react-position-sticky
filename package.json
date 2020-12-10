@@ -1,8 +1,8 @@
 {
   "name": "@allejo/react-position-sticky",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": {
-    "name": "CSUN IT"
+    "name": "Vladimir \"allejo\" Jimenez"
   },
   "version": "1.0.0",
   "main": "dist/index.js",
