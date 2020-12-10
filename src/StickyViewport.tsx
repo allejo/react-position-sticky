@@ -31,7 +31,7 @@ function removeSticky(id: string): boolean {
 	return callbacks.delete(id);
 }
 
-export function StickyNotifierProvider(props: Props) {
+export function StickyViewport(props: Props) {
 	const ref = useRef();
 	const [observers, setObservers] = useState<IObserverContext['observers']>({
 		top: null,

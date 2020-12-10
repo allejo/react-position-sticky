@@ -1,4 +1,5 @@
 import React, {
+	CSSProperties,
 	Component,
 	ContextType,
 	ReactElement,
@@ -10,6 +11,15 @@ import { ObserverContext } from './ObserverContext';
 
 interface Props {
 	onSticky?: (stuck: boolean) => void;
+	sentinels: {
+		top: {
+			height: CSSProperties['height'];
+			top: CSSProperties['top'];
+		};
+		bottom: {
+			height: CSSProperties['height'];
+		};
+	};
 	children: ReactElement;
 }
 
@@ -35,7 +45,14 @@ function uuidv4() {
 	});
 }
 
-export class StickyNotifier extends Component<Props, State> {
+const baseSentinelStyles: Partial<CSSProperties> = {
+	left: '0',
+	position: 'absolute',
+	right: '0',
+	visibility: 'hidden',
+};
+
+export class StickyElement extends Component<Props, State> {
 	private readonly referencedChild: RefObject<HTMLElement>;
 	private readonly topSentinel: RefObject<HTMLDivElement>;
 	private readonly btmSentinel: RefObject<HTMLDivElement>;
@@ -96,6 +113,10 @@ export class StickyNotifier extends Component<Props, State> {
 			<>
 				<div
 					ref={this.topSentinel}
+					style={{
+						...baseSentinelStyles,
+						...this.props.sentinels.top,
+					}}
 					data-sticky-sentinel-location="top"
 					data-sticky-sentinel-for={this.id}
 				/>
@@ -107,6 +128,11 @@ export class StickyNotifier extends Component<Props, State> {
 
 				<div
 					ref={this.btmSentinel}
+					style={{
+						...baseSentinelStyles,
+						...this.props.sentinels.bottom,
+						bottom: '0',
+					}}
 					data-sticky-sentinel-location="bottom"
 					data-sticky-sentinel-for={this.id}
 				/>

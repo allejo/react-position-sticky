@@ -5,7 +5,11 @@ import './index.css';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { StickyNotifier, StickyNotifierProvider } from '../src';
+import { StickyElement, StickyViewport } from '../src';
+
+function normalizeTitle(title) {
+	return title.replace(/[\s!]/g, '-');
+}
 
 const loremIpsum = `
 Pulvinar mattis nunc sed blandit libero. Est lorem ipsum dolor sit. Non pulvinar
@@ -98,25 +102,43 @@ const App = () => {
 			</div>
 
 			<main className={debug ? 'debug' : ''}>
-				<StickyNotifierProvider>
+				<StickyViewport>
 					<div id="container">
 						{Messages.map((msg, index) => (
 							<div key={index} className="sticky-item">
-								<StickyNotifier
+								<StickyElement
 									onSticky={(stuck) =>
 										handleSticky(stuck, msg)
 									}
+									sentinels={{
+										top: {
+											top: '-24px',
+											height: '40px',
+										},
+										bottom: {
+											height: '96px',
+										},
+									}}
 								>
 									<div className="sticky">
-										<h2 id={msg}>{msg}</h2>
+										<h2 id={normalizeTitle(msg)}>{msg}</h2>
 									</div>
-								</StickyNotifier>
+								</StickyElement>
 
 								<div>{loremIpsum}</div>
 							</div>
 						))}
 					</div>
-				</StickyNotifierProvider>
+				</StickyViewport>
+				<aside style={{ minWidth: '200px' }}>
+					<ul>
+						{Messages.map((msg, index) => (
+							<li key={index}>
+								<a href={`#${normalizeTitle(msg)}`}>{msg}</a>
+							</li>
+						))}
+					</ul>
+				</aside>
 			</main>
 		</div>
 	);

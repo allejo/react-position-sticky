@@ -46,7 +46,8 @@ h5 {
 }
 
 .debug [data-sticky-sentinel-location] {
-	visibility: visible;
+	background: yellow;
+	visibility: visible !important;
 	opacity: 0.8;
 	color: initial;
 	display: flex;
@@ -68,34 +69,10 @@ h5 {
 	align-items: center;
 }
 
-[data-sticky-sentinel-location] {
-	background: yellow;
-	position: absolute;
-	left: 0;
-	right: 0; /* needs dimensions */
-	visibility: hidden;
-}
-
-[data-sticky-sentinel-location='top'] {
-	/* Adjust the height and top values based on your on your sticky top position.
-	e.g. make the height bigger and adjust the top so observeHeaders()'s
-	IntersectionObserver fires as soon as the bottom of the sentinel crosses the
-	top of the intersection container. */
-	height: 40px;
-	top: -24px;
-}
-
-[data-sticky-sentinel-location='bottom'] {
-	bottom: 0;
-	/* Height should match the top of the header when it's at the bottom of the
-	intersection container. */
-	height: calc(var(--header-height) + var(--default-padding));
-}
-
 .sticky-item {
 	background-color: #fff;
-	margin-bottom: 20px;
-	padding: 10px;
+	margin-bottom: calc(var(--default-padding) * 2);
+	padding: var(--default-padding);
 	position: relative;
 	text-align: justify;
 }

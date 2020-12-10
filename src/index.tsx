@@ -1,2 +1,2 @@
-export * from './StickyNotifier';
-export * from './StickyNotifierProvider';
+export * from './StickyElement';
+export * from './StickyViewport';
