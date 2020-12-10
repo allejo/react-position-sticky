@@ -53,11 +53,24 @@ const App = () => {
 		'this',
 		'page!',
 	];
+	const ref = React.useRef<HTMLDivElement>(null);
 	const [header, setHeader] = React.useState('--');
 	const [debug, setDebug] = React.useState(false);
 
 	const handleSticky = (stuck: boolean, header: string) => {
 		setHeader(stuck ? header : '--');
+	};
+	const scrollTo = (event: React.SyntheticEvent<HTMLAnchorElement>): void => {
+		event.preventDefault();
+
+		const anchor = event.currentTarget;
+		const target = document.querySelector(anchor.getAttribute('href')!);
+		const parent = target!.parentElement!.parentElement;
+
+		// Slight px offset so IntersectionObserver triggers.
+		// Note: Smooth scroll is taken care of. Container has
+		// `scroll-behavior: smooth`.
+		ref.current?.scrollTo({ left: 0, top: parent!.offsetTop + 2 });
 	};
 
 	return (
@@ -76,9 +89,8 @@ const App = () => {
 						</a>
 					</code>{' '}
 					to fire an event when each header begins to stick, and vice
-					versa.
-					<b>No scroll events</b> were harmed in the making of this
-					demo.{' '}
+					versa. <b>No scroll events</b> were harmed in the making of
+					this demo.{' '}
 					<a
 						href="https://developers.google.com/web/updates/2017/09/sticky-headers"
 						target="_blank"
@@ -103,13 +115,13 @@ const App = () => {
 
 			<main className={debug ? 'debug' : ''}>
 				<StickyViewport>
-					<div id="container">
+					<div id="container" ref={ref}>
 						{Messages.map((msg, index) => (
 							<div key={index} className="sticky-item">
 								<StickyElement
-									onSticky={(stuck) =>
-										handleSticky(stuck, msg)
-									}
+									onSticky={(stuck) => {
+										handleSticky(stuck, msg);
+									}}
 									sentinels={{
 										top: {
 											top: '-24px',
@@ -134,7 +146,12 @@ const App = () => {
 					<ul>
 						{Messages.map((msg, index) => (
 							<li key={index}>
-								<a href={`#${normalizeTitle(msg)}`}>{msg}</a>
+								<a
+									href={`#${normalizeTitle(msg)}`}
+									onClick={scrollTo}
+								>
+									{msg}
+								</a>
 							</li>
 						))}
 					</ul>

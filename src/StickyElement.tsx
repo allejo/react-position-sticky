@@ -2,7 +2,9 @@ import React, {
 	CSSProperties,
 	Component,
 	ContextType,
+	MutableRefObject,
 	ReactElement,
+	RefAttributes,
 	RefObject,
 	createRef,
 } from 'react';
@@ -20,19 +22,11 @@ interface Props {
 			height: CSSProperties['height'];
 		};
 	};
-	children: ReactElement;
+	children: ReactElement & RefAttributes<HTMLElement>;
 }
 
 interface State {
-	computedStyles: CSSStyleDeclaration | null;
-
-	/**
-	 * An epoch timestamp to determine the last update, because `computedStyles`
-	 * is an object, it would be expensive to perform a deep comparison between
-	 * the styles.
-	 */
-	lastUpdate: number;
-
+	consoleWarningSent: boolean;
 	stuck: string | null;
 }
 
@@ -53,10 +47,10 @@ const baseSentinelStyles: Partial<CSSProperties> = {
 };
 
 export class StickyElement extends Component<Props, State> {
-	private readonly referencedChild: RefObject<HTMLElement>;
 	private readonly topSentinel: RefObject<HTMLDivElement>;
 	private readonly btmSentinel: RefObject<HTMLDivElement>;
 	private readonly id: string;
+	private referencedChild: HTMLElement | null;
 
 	public static contextType = ObserverContext;
 	public context!: ContextType<typeof ObserverContext>;
@@ -65,12 +59,11 @@ export class StickyElement extends Component<Props, State> {
 		super(props);
 
 		this.id = uuidv4();
-		this.referencedChild = createRef();
+		this.referencedChild = null;
 		this.topSentinel = createRef();
 		this.btmSentinel = createRef();
 		this.state = {
-			computedStyles: null,
-			lastUpdate: 0,
+			consoleWarningSent: false,
 			stuck: null,
 		};
 	}
@@ -84,18 +77,25 @@ export class StickyElement extends Component<Props, State> {
 	};
 
 	componentDidUpdate(_: Readonly<Props>, prevState: Readonly<State>): void {
-		if (this.state.lastUpdate !== prevState.lastUpdate) {
+		if (this.state.consoleWarningSent !== prevState.consoleWarningSent) {
 			return;
 		}
 
-		if (this.referencedChild.current === null) {
+		if (this.referencedChild === null) {
 			return;
 		}
 
-		this.setState({
-			computedStyles: getComputedStyle(this.referencedChild.current),
-			lastUpdate: new Date().getTime(),
-		});
+		const styles = getComputedStyle(this.referencedChild);
+
+		if (!this.state.consoleWarningSent && styles.position !== 'sticky') {
+			if (process.env.NODE_ENV !== 'production') {
+				console.warn(
+					'Warning: The child of this StickyElement was not detected to have `position: sticky`. Is this intentional?'
+				);
+			}
+
+			this.setState({ consoleWarningSent: true });
+		}
 
 		this.context.registerSticky(this.id, this._handleStuckCallback);
 		this.context.observers.top?.observe(this.topSentinel.current!);
@@ -122,7 +122,16 @@ export class StickyElement extends Component<Props, State> {
 				/>
 
 				{React.cloneElement(this.props.children, {
-					ref: this.referencedChild,
+					ref: (node: any): void => {
+						this.referencedChild = node;
+						const ref = this.props.children.ref;
+
+						if (typeof ref === 'function') {
+							ref(node);
+						} else if (ref !== null) {
+							(ref as MutableRefObject<HTMLElement>).current = node;
+						}
+					},
 					stuck: this.state.stuck,
 				})}
 

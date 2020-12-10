@@ -1,5 +1,7 @@
 import React, {
+	MutableRefObject,
 	ReactElement,
+	RefAttributes,
 	cloneElement,
 	useEffect,
 	useRef,
@@ -9,7 +11,7 @@ import React, {
 import { IObserverContext, ObserverContext } from './ObserverContext';
 
 interface Props {
-	children: ReactElement;
+	children: ReactElement & RefAttributes<HTMLElement>;
 }
 
 const callbacks = new Map<string, (s: boolean) => void>();
@@ -32,7 +34,7 @@ function removeSticky(id: string): boolean {
 }
 
 export function StickyViewport(props: Props) {
-	const ref = useRef();
+	const ref = useRef(null);
 	const [observers, setObservers] = useState<IObserverContext['observers']>({
 		top: null,
 		btm: null,
@@ -119,7 +121,18 @@ export function StickyViewport(props: Props) {
 		<ObserverContext.Provider
 			value={{ observers, registerSticky, removeSticky }}
 		>
-			{cloneElement(props.children, { ref })}
+			{cloneElement(props.children, {
+				ref: (node: any): void => {
+					ref.current = node;
+					const ref_ = props.children.ref;
+
+					if (typeof ref_ === 'function') {
+						ref_(node);
+					} else if (props.children.ref !== null) {
+						(ref_ as MutableRefObject<HTMLElement>).current = node;
+					}
+				},
+			})}
 		</ObserverContext.Provider>
 	);
 }
