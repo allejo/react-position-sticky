@@ -1,160 +1,94 @@
-# TSDX React User Guide
+# React Position Sticky
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+A React port of [Eric Bidelman's usage of `IntersectionObserver` for firing a callback when a `position: sticky` element sticks and unsticks](https://developers.google.com/web/updates/2017/09/sticky-headers).
 
-> This TSDX setup is meant for developing React component libraries (not apps!) that can be published to NPM. If you’re looking to build a React-based app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
+## Installation
 
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
+It's available via `npm`/`yarn`.
 
-## Commands
+```
+npm i @allejo/react-position-sticky
 
-TSDX scaffolds your new library inside `/src`, and also sets up a [Parcel-based](https://parceljs.org) playground for it inside `/example`.
+# or
 
-The recommended workflow is to run TSDX in one terminal:
-
-```bash
-npm start # or yarn start
+yarn add @allejo/react-position-sticky
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+## Usage
 
-Then run the example inside another:
+This project requires you to use two separate components, the `StickyViewport` and the `StickyElement` components. Both of these components do **not** render any HTML elements (they return React Fragements), instead these components will use refs to your elements.
 
-```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
+```tsx
+import { StickyElement, StickyViewport } from '@allejo/react-position-sticky';
+
+return (
+	<StickyViewport>
+		<div className="position-relative overflow-y">
+			<article>
+				<StickyElement
+					onSticky={(stuck) => handleStick(stuck)}
+					sentinels={{
+						top: {
+							top: '0',
+							height: '16px',
+						},
+						bottom: {
+							height: '96px',
+						},
+					}}
+				>
+					<header className="position-sticky">
+						<h2>Article Title 1</h2>
+					</header>
+				</StickyElement>
+
+				<p>...</p>
+			</article>
+		</div>
+	</StickyViewport>
+);
 ```
 
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, we use [Parcel's aliasing](https://parceljs.org/module_resolution.html#aliases).
+## How to Determine the `sentinels` Prop
 
-To do a one-off build, use `npm run build` or `yarn build`.
+[Eric Bidelman's tutorial](https://developers.google.com/web/updates/2017/09/sticky-headers) excellently details _how_ this implementation using `IntersectionObserver` works. However, if you're like me, the magic values used for sentinels didn't make sense. Therefore, here's a visualization on how to calculate the values for sentinels.
 
-To run tests, use `npm test` or `yarn test`.
+In the following images, scrollable containers are indicated by the dashed lines
 
-## Configuration
+### The Top Sentinel
 
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
+The `top` sentinel has two values: `top` and `height`; these props correspond to respective `top` and `height` CSS properties of the top sentinel.
 
-### Jest
+When thinking about how to configure your top sentinel, your goal is to make the following statement true,
 
-Jest tests are set up to run with `npm test` or `yarn test`.
+> Once the top sentinel starts to disappear outside of the `<StickyViewport>`, then it will be assumed that the `<StickyElement>` has become stuck.
 
-### Bundle analysis
+In this example, we have a white container with `position: relative` and 16px of padding. In order to achieve the goal above, we'll state that, once the top padding of this container (indicated in red) starts to disappear, then our `<StickyElement>` has become stuck.
 
-Calculates the real cost of your library using [size-limit](https://github.com/ai/size-limit) with `npm run size` and visulize it with `npm run analyze`.
+![](.github/assets/top-sentinel-not-stuck.jpg)
 
-#### Setup Files
+![](.github/assets/top-sentinel-stuck.jpg)
 
-This is the folder structure we set up for you:
+Assuming that once the top padding of the container has begun to disappear, we can define our top sentinel as the size and location of our container's top padding. Using `top` and `height`, we define the top sentinel as being 16px high and at the very top of the parent with `top: 0`.
 
-```txt
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
+### The Bottom Sentinel
 
-#### React Testing Library
+The `bottom` sentinel has only one value: `height`; which corresponds with the CSS `height` property of the bottom sentinel.
 
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
+When thinking about how to configure your bottom sentinel, your goal is to make the following statement true,
 
-### Rollup
+> Once the bottom sentinel has the `<StickyElement>` entirely inside of it, then it will be assumed that the `<StickyElement>` is no longer stuck.
 
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+Continuing our example above, we see that the "JavaScript" heading is still currently stuck as it has not hit the bottom padding of the white container.
 
-### TypeScript
+![](.github/assets/bottom-sentinel-stuck.jpg)
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
+Once the "JavaScript" heading has reached its specified bottom relative to the white container, it is no longer stuck.
 
-## Continuous Integration
+![](.github/assets/bottom-sentinel-not-stuck.jpg)
 
-### GitHub Actions
+Using this assumption, we build the bottom sentinel to be as tall as the height of the heading plus the bottom padding of the white container. In this example, the heading's height is 80px and the padding is 16px, meaning our bottom sentinel's height should be 96px.
 
-Two actions are added by default:
+## License
 
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
-```
-
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
-
-## Module Formats
-
-CJS, ESModules, and UMD module formats are supported.
-
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Deploying the Example Playground
-
-The Playground is just a simple [Parcel](https://parceljs.org) app, you can deploy it anywhere you would normally deploy that. Here are some guidelines for **manually** deploying with the Netlify CLI (`npm i -g netlify-cli`):
-
-```bash
-cd example # if not already in the example folder
-npm run build # builds to dist
-netlify deploy # deploy the dist folder
-```
-
-Alternatively, if you already have a git repo connected, you can set up continuous deployment with Netlify:
-
-```bash
-netlify init
-# build command: yarn build && cd example && yarn && yarn build
-# directory to deploy: example/dist
-# pick yes for netlify.toml
-```
-
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
-
-## Usage with Lerna
-
-When creating a new package with TSDX within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
-```
-
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+[Apache 2.0](./LICENSE)
