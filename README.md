@@ -1,16 +1,18 @@
 # React Position Sticky
 
+[![Latest release](https://img.shields.io/github/v/release/allejo/react-position-sticky?include_prereleases)](https://github.com/allejo/react-position-sticky/releases/latest)
+[![npm](https://img.shields.io/npm/v/@allejo/react-position-sticky.svg)](https://www.npmjs.com/package/@allejo/react-position-sticky)
+
+
 A React port of [Eric Bidelman's usage of `IntersectionObserver` for firing a callback when a `position: sticky` element sticks and unsticks](https://developers.google.com/web/updates/2017/09/sticky-headers).
 
 ## Installation
 
 It's available via `npm`/`yarn`.
 
-```
+```bash
 npm i @allejo/react-position-sticky
-
 # or
-
 yarn add @allejo/react-position-sticky
 ```
 
