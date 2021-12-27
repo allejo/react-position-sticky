@@ -124,8 +124,8 @@ const App = () => {
 									}}
 									sentinels={{
 										top: {
-											top: '-24px',
-											height: '40px',
+											top: '0',
+											height: '16px',
 										},
 										bottom: {
 											height: '96px',

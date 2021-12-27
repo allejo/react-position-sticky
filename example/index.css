@@ -46,7 +46,7 @@ h5 {
 }
 
 .debug [data-sticky-sentinel-location] {
-	background: yellow;
+	background: #ff00a5;
 	visibility: visible !important;
 	opacity: 0.8;
 	color: initial;
