@@ -1,10 +1,21 @@
 {
   "name": "@allejo/react-position-sticky",
+  "version": "1.0.0-rc.1",
+  "description": "A React port of Eric Bidelman's implementation for having a callback on `position: sticky` changes",
+  "keywords": [
+    "react",
+    "position",
+    "sticky"
+  ],
   "license": "Apache-2.0",
   "author": {
     "name": "Vladimir \"allejo\" Jimenez"
   },
-  "version": "1.0.0",
+  "homepage": "https://react-position-sticky.allejo.org/",
+  "repository": "github:allejo/react-position-sticky",
+  "bugs": {
+    "url": "https://github.com/allejo/react-position-sticky/issues"
+  },
   "main": "dist/index.js",
   "module": "dist/react-position-sticky.esm.js",
   "files": [
