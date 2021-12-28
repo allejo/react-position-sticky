@@ -11,20 +11,18 @@ import React, {
 import { IObserverContext, ObserverContext } from './ObserverContext';
 
 interface Props {
+	useBrowserViewport?: boolean;
 	children: ReactElement & RefAttributes<HTMLElement>;
 }
 
 const callbacks = new Map<string, (s: boolean) => void>();
 
-function registerSticky(
-	id: string,
-	callback: (stuck: boolean) => void
-): boolean {
+function registerSticky(id: string, cb: (stuck: boolean) => void): boolean {
 	if (callbacks.has(id)) {
 		return false;
 	}
 
-	callbacks.set(id, callback);
+	callbacks.set(id, cb);
 
 	return true;
 }
@@ -33,18 +31,17 @@ function removeSticky(id: string): boolean {
 	return callbacks.delete(id);
 }
 
-export function StickyViewport(props: Props) {
-	const ref = useRef(null);
+export function StickyViewport({
+	children,
+	useBrowserViewport = false,
+}: Props) {
+	const childRef = useRef(null);
 	const [observers, setObservers] = useState<IObserverContext['observers']>({
 		top: null,
 		btm: null,
 	});
 
 	useEffect(() => {
-		if (ref.current === null) {
-			return;
-		}
-
 		setObservers({
 			top: new IntersectionObserver(
 				(records) => {
@@ -77,7 +74,7 @@ export function StickyViewport(props: Props) {
 				},
 				{
 					threshold: [0],
-					root: ref.current,
+					root: childRef.current,
 				}
 			),
 			btm: new IntersectionObserver(
@@ -111,28 +108,34 @@ export function StickyViewport(props: Props) {
 				},
 				{
 					threshold: [1],
-					root: ref.current,
+					root: childRef.current,
 				}
 			),
 		});
-	}, [ref]);
+	}, [childRef]);
+
+	// If we're using an element as the sticky viewport, then let's save a ref
+	// to it for our `IntersectionObserver`s.
+	const clonedProps = {
+		ref: (node: any): void => {
+			childRef.current = node;
+			const ref_ = children.ref;
+
+			if (typeof ref_ === 'function') {
+				ref_(node);
+			} else if (ref_ !== null) {
+				(ref_ as MutableRefObject<HTMLElement>).current = node;
+			}
+		},
+	};
 
 	return (
 		<ObserverContext.Provider
 			value={{ observers, registerSticky, removeSticky }}
 		>
-			{cloneElement(props.children, {
-				ref: (node: any): void => {
-					ref.current = node;
-					const ref_ = props.children.ref;
-
-					if (typeof ref_ === 'function') {
-						ref_(node);
-					} else if (props.children.ref !== null) {
-						(ref_ as MutableRefObject<HTMLElement>).current = node;
-					}
-				},
-			})}
+			{useBrowserViewport
+				? children
+				: cloneElement(children, clonedProps)}
 		</ObserverContext.Provider>
 	);
 }

@@ -3,7 +3,6 @@
 [![Latest release](https://img.shields.io/github/v/release/allejo/react-position-sticky?include_prereleases)](https://github.com/allejo/react-position-sticky/releases/latest)
 [![npm](https://img.shields.io/npm/v/@allejo/react-position-sticky.svg)](https://www.npmjs.com/package/@allejo/react-position-sticky)
 
-
 A React port of [Eric Bidelman's usage of `IntersectionObserver` for firing a callback when a `position: sticky` element sticks and unsticks](https://developers.google.com/web/updates/2017/09/sticky-headers).
 
 ## Installation
@@ -18,7 +17,7 @@ yarn add @allejo/react-position-sticky
 
 ## Usage
 
-This project requires you to use two separate components, the `StickyViewport` and the `StickyElement` components. Both of these components do **not** render any HTML elements (they return React Fragements), instead these components will use refs to your elements.
+This project requires you to use two separate components, the `StickyViewport` and the `StickyElement` components. Both of these components do **not** render any HTML elements (they return React Fragments), instead these components will use refs to your elements.
 
 ```tsx
 import { StickyElement, StickyViewport } from '@allejo/react-position-sticky';
@@ -50,6 +49,22 @@ return (
 	</StickyViewport>
 );
 ```
+
+## The Components
+
+As mentioned, both of these components do **not** render any new elements in the DOM; instead they attach themselves to their respective children.
+
+### The `StickyViewport`
+
+The `<StickyViewport>` should surround the parent div that is `position: relative`; this is the viewport of where a sticky child will be rendered and can become stuck.
+
+In the above example, our parent div has an `overflow: y` meaning we will treat it as the viewport. However, this is not always the case; sometimes you will want to treat your browser window as the viewport. When this is the case, set the `useBrowserViewport` prop to `true`.
+
+### The `StickyElement`
+
+The `<StickyElement>` should surround the element that is `position: sticky`. This component will automatically add a `data-stuck` attribute to the element it surrounds, which can be used for conditional CSS styling.
+
+Additionally, it also has the `onSticky` callback with a `stuck` parameter indicating whether the element has become stuck or unstuck.
 
 ## How to Determine the `sentinels` Prop
 

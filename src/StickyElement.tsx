@@ -12,6 +12,7 @@ import React, {
 import { ObserverContext } from './ObserverContext';
 
 interface Props {
+	id?: string;
 	onSticky?: (stuck: boolean) => void;
 	sentinels: {
 		top: {
@@ -58,7 +59,7 @@ export class StickyElement extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 
-		this.id = uuidv4();
+		this.id = props.id ?? uuidv4();
 		this.referencedChild = null;
 		this.topSentinel = createRef();
 		this.btmSentinel = createRef();
@@ -85,16 +86,18 @@ export class StickyElement extends Component<Props, State> {
 			return;
 		}
 
-		const styles = getComputedStyle(this.referencedChild);
+		if (process.env.NODE_ENV !== 'production') {
+			const styles = getComputedStyle(this.referencedChild);
 
-		if (!this.state.consoleWarningSent && styles.position !== 'sticky') {
-			if (process.env.NODE_ENV !== 'production') {
-				console.warn(
-					'Warning: The child of this StickyElement was not detected to have `position: sticky`. Is this intentional?'
-				);
+			if (styles.position !== 'sticky') {
+				if (!this.state.consoleWarningSent) {
+					console.warn(
+						'Warning: The child of this StickyElement was not detected to have `position: sticky`. Is this intentional?'
+					);
+				}
+
+				this.setState({ consoleWarningSent: true });
 			}
-
-			this.setState({ consoleWarningSent: true });
 		}
 
 		this.context.registerSticky(this.id, this._handleStuckCallback);
@@ -132,7 +135,7 @@ export class StickyElement extends Component<Props, State> {
 							(ref as MutableRefObject<HTMLElement>).current = node;
 						}
 					},
-					stuck: this.state.stuck,
+					'data-stuck': this.state.stuck,
 				})}
 
 				<div
