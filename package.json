@@ -1,12 +1,6 @@
 {
   "name": "@allejo/react-position-sticky",
-  "version": "1.0.0-rc.1",
   "description": "A React port of Eric Bidelman's implementation for having a callback on `position: sticky` changes",
-  "keywords": [
-    "react",
-    "position",
-    "sticky"
-  ],
   "license": "Apache-2.0",
   "author": {
     "name": "Vladimir \"allejo\" Jimenez"
@@ -16,6 +10,7 @@
   "bugs": {
     "url": "https://github.com/allejo/react-position-sticky/issues"
   },
+  "version": "1.0.0-rc.1",
   "main": "dist/index.js",
   "module": "dist/react-position-sticky.esm.js",
   "files": [
@@ -24,7 +19,7 @@
   "scripts": {
     "analyze": "size-limit --why",
     "build": "tsdx build",
-    "lint": "tsdx lint",
+    "lint": "tsdx lint example src test",
     "prepare": "tsdx build",
     "size": "size-limit",
     "start": "tsdx watch",
@@ -59,12 +54,17 @@
     "tslib": "^2.0.3",
     "typescript": "^4.1.2"
   },
+  "keywords": [
+    "position",
+    "react",
+    "sticky"
+  ],
   "engines": {
     "node": ">=10"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "tsdx lint"
+      "pre-commit": "yarn lint"
     }
   },
   "importSort": {

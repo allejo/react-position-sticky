@@ -23,30 +23,30 @@ This project requires you to use two separate components, the `StickyViewport` a
 import { StickyElement, StickyViewport } from '@allejo/react-position-sticky';
 
 return (
-	<StickyViewport>
-		<div className="position-relative overflow-y">
-			<article>
-				<StickyElement
-					onSticky={(stuck) => handleStick(stuck)}
-					sentinels={{
-						top: {
-							top: '0',
-							height: '16px',
-						},
-						bottom: {
-							height: '96px',
-						},
-					}}
-				>
-					<header className="position-sticky">
-						<h2>Article Title 1</h2>
-					</header>
-				</StickyElement>
+  <StickyViewport>
+    <div className="position-relative overflow-y">
+      <article>
+        <StickyElement
+          onSticky={(stuck) => handleStick(stuck)}
+          sentinels={{
+            top: {
+              top: '0',
+              height: '16px',
+            },
+            bottom: {
+              height: '96px',
+            },
+          }}
+        >
+          <header className="position-sticky">
+            <h2>Article Title 1</h2>
+          </header>
+        </StickyElement>
 
-				<p>...</p>
-			</article>
-		</div>
-	</StickyViewport>
+        <p>...</p>
+      </article>
+    </div>
+  </StickyViewport>
 );
 ```
 
